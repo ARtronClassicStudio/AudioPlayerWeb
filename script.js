@@ -10,10 +10,10 @@ let isPlaying = false;
 function togglePlayPause() {
     if (isPlaying) {
         audioPlayer.pause();
-        playPauseIcon.src = 'play.svg'; // Замените на ваш значок play
+        playPauseIcon.src = 'play.svg';
     } else {
         audioPlayer.play();
-        playPauseIcon.src = 'pause.svg'; // Замените на ваш значок pause
+        playPauseIcon.src = 'pause.svg';
     }
     isPlaying = !isPlaying;
 }
@@ -37,21 +37,28 @@ audioPlayer.addEventListener('pause', function() {
     isPlaying = false;
 });
 
-
 // Update track title (replace with your logic to get title from stream)
-trackTitle.textContent = "My Awesome Radio Stream"; // Hardcoded title
+trackTitle.textContent = "My Awesome Radio Stream";
+
+// Attempt autoplay and remove muted attribute
+audioPlayer.addEventListener('canplay', function() {
+  audioPlayer.muted = false; // Unmute
+  audioPlayer.play().then(() => {
+      console.log("Autoplay started successfully!");
+      playPauseIcon.src = 'pause.svg';
+      isPlaying = true;
+  }).catch(error => {
+      console.log("Autoplay prevented by browser:", error);
+      // Show a message to the user or update the UI to indicate autoplay was blocked
+      trackTitle.textContent = "Click Play to Start"; // e.g.
+      playPauseIcon.src = 'play.svg';
+      isPlaying = false;
+  });
+});
+
 
 // Handle errors
 audioPlayer.addEventListener('error', function(e) {
     console.error("Audio error:", e);
     trackTitle.textContent = "Error loading audio.";
 });
-
-// Optional: Fetch title from stream metadata (more complex)
-// This requires server-side support or stream that provides metadata in a predictable format.
-// Example (not guaranteed to work):
-// fetch('/stream-metadata')
-//   .then(response => response.json())
-//   .then(data => {
-//     trackTitle.textContent = data.title;
-//   });
