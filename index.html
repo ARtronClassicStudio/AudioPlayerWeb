@@ -20,10 +20,27 @@
 </head>
 <body>
 
-    <audio controls>
+    <audio controls autoplay muted id="myAudio">
         <source src="audio.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+
+    <script>
+        var audio = document.getElementById("myAudio");
+
+        audio.addEventListener('loadedmetadata', function() {
+            audio.muted = true; // Ensure muted initially
+            audio.play().then(function() {
+                // Autoplay started!
+                audio.muted = false; // Unmute the audio
+                console.log("Autoplay started successfully!");
+            }).catch(function(error) {
+                // Autoplay was prevented.
+                console.log("Autoplay was prevented by browser: ", error);
+                // Optionally, show a message to the user or add a button to start playback.
+            });
+        });
+    </script>
 
 </body>
 </html>
